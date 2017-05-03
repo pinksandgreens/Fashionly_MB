@@ -46,6 +46,7 @@ explore: order_items {
     sql_on: ${orders.user_id} = ${users.id} ;;
     relationship: many_to_one
   }
+
 }
 
 explore: orders {

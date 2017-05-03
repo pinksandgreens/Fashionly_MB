@@ -38,6 +38,12 @@ view: order_items {
     sql: ${TABLE}.sale_price ;;
   }
 
+  dimension: gross_revenue {
+    type: number
+    value_format_name: decimal_2
+    sql: ${sale_price} - ${inventory_items.cost} ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [id, inventory_items.id, orders.id]
@@ -50,10 +56,22 @@ view: order_items {
 
   }
 
-  measure: Average_Sales_Price {
+  measure: average_aales_arice {
     type: average
     value_format: "0.00"
     sql: ${TABLE}.sale_price ;;
   }
 
+measure: cumulative_sales_total {
+  type: running_total
+  label: "Cumulative Sales Total"
+  value_format: "0.00"
+  sql: ${sale_price} ;;
+}
+
+measure: total_gross_revenue {
+  type: sum
+  sql: ${gross_revenue}  ;;
+
+}
 }
