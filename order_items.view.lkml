@@ -56,34 +56,29 @@ view: order_items {
 
   measure: total_sales {
     type:  sum
-    label: "Total Sales"
     sql: ${TABLE}.sale_price ;;
 
   }
 
   measure: average_sales_price {
     type: average
-    label: "Average Sales Price"
     value_format: "0.00"
     sql: ${TABLE}.sale_price ;;
   }
 
 measure: cumulative_sales_total {
   type: running_total
-  label: "Cumulative Sales Total"
   value_format: "0.00"
   sql: ${sale_price} ;;
 }
 
 measure: total_gross_revenue {
   type: sum
-  label: "Total Gross Revenuw"
   sql: ${gross_revenue}  ;;
 }
 
 measure:  total_gross_amount {
   type: number
-  label: "Total Gross Amount"
   sql: ${total_gross_revenue} - ${inventory_items.total_cost} ;;
 
 }
