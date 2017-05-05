@@ -39,7 +39,7 @@ view: order_items {
     sql: ${TABLE}.sale_price ;;
   }
 
-  dimension: gross_revenue {
+  dimension: line_revenue {
     type: number
     value_format_name: decimal_2
     sql: CASE
@@ -74,13 +74,23 @@ measure: cumulative_sales_total {
 
 measure: total_gross_revenue {
   type: sum
-  sql: ${gross_revenue}  ;;
+  sql: ${line_revenue}  ;;
 }
 
-measure:  total_gross_amount {
+measure:  total_gross_margin {
   type: number
   sql: ${total_gross_revenue} - ${inventory_items.total_cost} ;;
 
+}
+
+measure:  average_gross_margin {
+  type:  average
+  sql:  ${line_revenue} - {inventory_items.cost};;
+}
+
+measure: gross_margin_percentage {
+  type: percent_of_total
+  sql: ${total_gross_margin}/${total_gross_revenue} ;;
 }
 
 }
