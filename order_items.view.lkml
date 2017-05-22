@@ -68,8 +68,6 @@ view: order_items {
         }
   }
 
-
-
 measure: item_return_rate {
   type: number
   sql: ${count_of_returned_items}/${count} ;;
@@ -116,11 +114,9 @@ measure: item_return_rate {
 
 measure: count_of_customers_with_returned_items {
   type:  count_distinct
-  filters: {
-    field: returned_item
-    value: "yes"
+  sql: ${orders.id}
   }
-}
+
 
   measure: cumulative_sales_total {
     type: running_total

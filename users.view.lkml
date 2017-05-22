@@ -66,10 +66,12 @@ view: users {
     sql: ${TABLE}.zip ;;
   }
 
+
   measure: count {
     type: count
     drill_fields: [detail*]
   }
+
 
   # ----- Sets of fields for drilling ------
   set: detail {
