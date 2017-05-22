@@ -114,9 +114,17 @@ measure: item_return_rate {
 
 measure: count_of_customers_with_returned_items {
   type:  count_distinct
-  sql: ${orders.user_id}
+  sql: ${users.id} ;;
+  filters: {
+    field: returned_item
+    value: "yes"
+  }
   }
 
+measure:  percentage_of_customers_with_returns {
+  type: number
+  sql: 100.0 * ${count_of_customers_with_returned_items}/${users.count} ;;
+}
 
   measure: cumulative_sales_total {
     type: running_total
@@ -136,6 +144,12 @@ measure: count_of_customers_with_returned_items {
     type: number
     sql: 100.0 * ${total_adjusted_margin}/COALESCE(${total_gross_revenue}, 0) ;;
   }
+
+measure:  average_spend_per_customer {
+  type: number
+  sql: 1.0 * ${total_sales_price}/${users.count} ;;
+}
+
 
   set: detail {
     fields: [id,
