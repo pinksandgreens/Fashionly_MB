@@ -52,13 +52,28 @@ view: order_items {
 
   dimension:  returned_item {
     type: yesno
-    sql: ${returned_date} is NULL ;;
+    sql: ${returned_date} is NOT NULL ;;
   }
 
   measure: count {
     type: count
     drill_fields: [detail*]
   }
+
+  measure: count_of_returned_items {
+    type: count
+    filters: {
+        field: returned_item
+        value: "yes"
+        }
+  }
+
+
+
+measure: item_return_rate {
+  type: number
+  sql: ${count_of_returned_items}/${count} ;;
+}
 
   measure: total_sales_price {
     type:  sum
@@ -99,7 +114,13 @@ view: order_items {
 
   }
 
-
+measure: count_of_customers_with_returned_items {
+  type:  count_distinct
+  filters: {
+    field: returned_item
+    value: "yes"
+  }
+}
 
   measure: cumulative_sales_total {
     type: running_total
