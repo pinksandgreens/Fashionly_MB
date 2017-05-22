@@ -114,7 +114,7 @@ measure: item_return_rate {
 
 measure: count_of_customers_with_returned_items {
   type:  count_distinct
-  sql: ${orders.id}
+  sql: ${orders.user_id}
   }
 
 
