@@ -63,19 +63,19 @@ view: order_items {
   measure: count_of_returned_items {
     type: count
     filters: {
-        field: returned_item
-        value: "yes"
-        }
+      field: returned_item
+      value: "yes"
+    }
   }
 
-measure: item_return_rate {
-  type: number
-  sql: ${count_of_returned_items}/${count} ;;
-}
+  measure: item_return_rate {
+    type: number
+    sql: ${count_of_returned_items}/${count} ;;
+  }
 
   measure: total_sales_price {
     type:  sum
-    value_format_name: decimal_2
+    value_format_name: usd
     sql: ${TABLE}.sale_price ;;
   }
 
@@ -87,6 +87,7 @@ measure: item_return_rate {
 
   measure:  total_adjusted_revenue {
     description: "total adjusted sales for completed orders and non-returned items"
+    value_format_name: usd
     type: sum
     sql: ${sale_price} ;;
     filters: {
@@ -95,60 +96,65 @@ measure: item_return_rate {
     }
     filters: {
       field: returned_item
-      value: "yes"
+      value: "no"
     }
   }
 
   measure: total_adjusted_margin {
     type: number
+    value_format_name: usd
     description: "Adjusted sales minus inventory cost"
     sql: ${total_adjusted_revenue} - ${inventory_items.total_cost} ;;
   }
 
   measure:  average_gross_margin {
     type: average
+    value_format_name: usd
     value_format_name: decimal_2
     sql: ${sale_margin} - ${inventory_items.cost} ;;
 
   }
 
-measure: count_of_customers_with_returned_items {
-  type:  count_distinct
-  sql: ${users.id} ;;
-  filters: {
-    field: returned_item
-    value: "yes"
-  }
+  measure: count_of_customers_with_returned_items {
+    type:  count_distinct
+    sql: ${users.id} ;;
+    filters: {
+      field: returned_item
+      value: "yes"
+    }
   }
 
-measure:  percentage_of_customers_with_returns {
-  type: number
-  sql: 100.0 * ${count_of_customers_with_returned_items}/${users.count} ;;
-}
+  measure:  percentage_of_customers_with_returns {
+    type: number
+    value_format_name: percent_2
+    sql: 100.0 * ${count_of_customers_with_returned_items}/${users.count} ;;
+  }
 
   measure: cumulative_sales_total {
     type: running_total
     label: "Cumulative Sales Total"
-    value_format: "0.00"
+    value_format_name: usd
     sql: ${sale_price} ;;
   }
 
   measure: total_gross_revenue {
     type: sum
-    value_format_name: decimal_2
+    value_format_name: usd
     label: "Total Gross Revenue"
     sql: ${sale_margin}  ;;
   }
 
   measure:  gross_margin_percentage {
+    value_format_name: percent_2
     type: number
     sql: 100.0 * ${total_adjusted_margin}/COALESCE(${total_gross_revenue}, 0) ;;
   }
 
-measure:  average_spend_per_customer {
-  type: number
-  sql: 1.0 * ${total_sales_price}/${users.count} ;;
-}
+  measure:  average_spend_per_customer {
+    value_format_name: usd
+    type: number
+    sql: 1.0 * ${total_sales_price}/${users.count} ;;
+  }
 
 
   set: detail {
