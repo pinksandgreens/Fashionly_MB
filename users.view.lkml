@@ -12,6 +12,19 @@ view: users {
     sql: ${TABLE}.age ;;
   }
 
+dimension: age_tier {
+
+  type: tier
+  style: integer
+  tiers: [15,25,35,50,65]
+  sql: ${age} ;;
+}
+
+dimension: new_customer {
+  type: yesno
+  sql:  ${created_date} >= DATE_ADD(CURDATE(), INTERVAL -89 DAY)   ;;
+#  (((users.created_at ) >= ((DATE_ADD(CURDATE(),INTERVAL -89 day))) AND (users.created_at ) < ((DATE_ADD(DATE_ADD(CURDATE(),INTERVAL -89 day),INTERVAL 90 day)))))
+}
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
@@ -58,11 +71,13 @@ view: users {
   }
 
   dimension: state {
+    map_layer_name: us_states
     type: string
     sql: ${TABLE}.state ;;
   }
 
   dimension: zip {
+    map_layer_name: us_zipcode_tabulation_areas
     type: zipcode
     sql: ${TABLE}.zip ;;
   }

@@ -105,6 +105,7 @@ view: order_items {
     value_format_name: usd
     description: "Adjusted sales minus inventory cost"
     sql: ${total_adjusted_revenue} - ${inventory_items.total_cost} ;;
+    drill_fields: [margin_detail*]
   }
 
   measure:  average_gross_margin {
@@ -130,6 +131,25 @@ view: order_items {
     sql: 100.0 * ${count_of_customers_with_returned_items}/${users.count} ;;
   }
 
+measure: total_revenue_new_customers {
+  description: "Total revenue for new customers 90 days or newer"
+  type: sum
+  value_format_name: usd
+  sql:${sale_price}  ;;
+  filters: {
+      field: users.new_customer
+      value: "Yes"
+  }
+  filters: {
+    field: orders.status
+    value: "complete"
+  }
+  filters: {
+    field: returned_item
+    value: "no"
+  }
+
+}
   measure: cumulative_sales_total {
     type: running_total
     label: "Cumulative Sales Total"
@@ -142,6 +162,11 @@ view: order_items {
     value_format_name: usd
     label: "Total Gross Revenue"
     sql: ${sale_margin}  ;;
+  }
+
+  measure: total_gross_revenue_percentage {
+    type: percent_of_total
+    sql: ${total_gross_revenue} ;;
   }
 
   measure:  gross_margin_percentage {
@@ -167,4 +192,7 @@ view: order_items {
       sale_price]
   }
 
+  set: margin_detail {
+        fields: [products.brand, products.category, order_items.count]
+  }
 }

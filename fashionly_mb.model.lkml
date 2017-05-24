@@ -47,6 +47,12 @@ explore: order_items {
     relationship: many_to_one
   }
 
+  join: customer_revenue {
+    type: left_outer
+    sql_on: ${customer_revenue.orders_created_date} = ${orders.created_date}
+            AND ${customer_revenue.order_id} = ${orders.id} ;;
+    relationship: many_to_many
+  }
 }
 
 explore: customers {
