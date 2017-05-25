@@ -162,6 +162,7 @@ measure: total_revenue_new_customers {
     value_format_name: usd
     label: "Total Gross Revenue"
     sql: ${sale_margin}  ;;
+    drill_fields: [margin_detail*]
   }
 
   measure: total_gross_revenue_percentage {
@@ -169,10 +170,16 @@ measure: total_revenue_new_customers {
     sql: ${total_gross_revenue} ;;
   }
 
+measure: total_gross_margin_percentage {
+  type: percent_of_total
+  value_format_name: percent_2
+  sql: ${total_adjusted_margin} ;;
+}
+
   measure:  gross_margin_percentage {
     value_format_name: percent_2
     type: number
-    sql: 100.0 * ${total_adjusted_margin}/COALESCE(${total_gross_revenue}, 0) ;;
+    sql: 1.0 * ${total_adjusted_margin}/COALESCE(${total_gross_revenue}, 0) ;;
   }
 
   measure:  average_spend_per_customer {
@@ -193,6 +200,6 @@ measure: total_revenue_new_customers {
   }
 
   set: margin_detail {
-        fields: [products.brand, products.category, order_items.count]
+        fields: [products.brand, products.category, products.item_name, order_items.count]
   }
 }

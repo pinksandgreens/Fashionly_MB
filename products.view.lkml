@@ -10,6 +10,18 @@ view: products {
   dimension: brand {
     type: string
     sql: ${TABLE}.brand ;;
+
+    link: {
+    label: "Website"
+    url: "http://www.google.com/search?q={{ value | encode_uri }}+clothes&btnI"
+    icon_url: "http://www.google.com/s2/favicons?domain=www.{{ value | encode_uri }}.com"
+  }
+
+  link: {
+    label: "Facebook"
+    url: "http://www.google.com/search?q=site:facebook.com+{{ value | encode_uri }}+clothes&btnI"
+    icon_url: "https://static.xx.fbcdn.net/rsrc.php/yl/r/H3nktOa7ZMg.ico"
+  }
   }
 
   dimension: category {
