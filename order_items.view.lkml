@@ -167,13 +167,13 @@ measure: total_revenue_new_customers {
 
   measure: total_gross_revenue_percentage {
     type: percent_of_total
-    sql: ${total_gross_revenue} ;;
+    sql: 1.0 * ${total_gross_revenue} ;;
   }
 
 measure: total_gross_margin_percentage {
   type: percent_of_total
   value_format_name: percent_2
-  sql: ${total_adjusted_margin} ;;
+  sql: 1.0 * ${total_adjusted_margin} ;;
 }
 
   measure:  gross_margin_percentage {
