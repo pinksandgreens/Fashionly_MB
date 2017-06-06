@@ -6,16 +6,21 @@ view: customer_revenue {
         DATE(users.created_at ) AS `users_created_date`,
         COALESCE(SUM(CASE
                 WHEN  orders.status = 'complete' AND (DATE(order_items.returned_at )) IS NULL
+                AND (((users.created_at ) >= ((DATE_ADD(CURDATE(),INTERVAL -89 day)))
+                AND (users.created_at ) < ((DATE_ADD(DATE_ADD(CURDATE(),INTERVAL -89 day),INTERVAL 90 day)))))
                   THEN  order_items.sale_price
                 ELSE 0
-              END  ), 0) AS `total_gross_revenue_90_days`
+              END  ), 0) AS `total_gross_revenue_90_days`,
+        COALESCE(SUM(CASE
+                WHEN  orders.status = 'complete' AND (DATE(order_items.returned_at )) IS NULL
+                THEN  order_items.sale_price
+                ELSE 0
+              END  ), 0) AS `total_gross_revenue`
       FROM demo_db.order_items  AS order_items
       LEFT JOIN demo_db.orders  AS orders ON order_items.order_id = orders.id
       LEFT JOIN demo_db.users  AS users ON orders.user_id = users.id
 
-      WHERE
-        (((users.created_at ) >= ((DATE_ADD(CURDATE(),INTERVAL -89 day))) AND (users.created_at ) < ((DATE_ADD(DATE_ADD(CURDATE(),INTERVAL -89 day),INTERVAL 90 day)))))
-      GROUP BY 1,2
+       GROUP BY 1,2
       ORDER BY DATE(orders.created_at )
       LIMIT 500
        ;;
@@ -48,6 +53,12 @@ view: customer_revenue {
     value_format_name: usd
     sql: ${TABLE}.total_gross_revenue_90_days ;;
   }
+
+dimension: customer_revenue_tier {
+    type: tier
+    style: interval
+    tiers: [4.99, 9.99, 49.99, 99.99, 499.99, 999.99]
+}
 
   set: detail {
     fields: [order_id, orders_created_date, total_gross_revenue_90_days]

@@ -55,6 +55,13 @@ explore: order_items {
             AND ${customer_revenue.order_id} = ${orders.id} ;;
     relationship: many_to_many
   }
+
+  join: customer_counts {
+    type: left_outer
+    sql_on: ${customer_counts.user_id} = ${orders.user_id} ;;
+    relationship: one_to_one
+  }
+
 }
 
 explore: customers {
@@ -82,6 +89,12 @@ explore: customers {
     type: left_outer
     sql_on: ${orders.user_id} = ${users.id} ;;
     relationship: many_to_one
+  }
+
+  join: customer_counts {
+    type: left_outer
+    sql_on: ${customer_counts.user_id} = ${orders.user_id} ;;
+    relationship: one_to_one
   }
 
 }

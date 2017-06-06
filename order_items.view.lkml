@@ -55,21 +55,6 @@ view: order_items {
     sql: ${returned_date} is NOT NULL ;;
   }
 
-  dimension: customer_order_count {
-    type: number
-    hidden: yes
-    sql:  (SELECT COUNT(DISTINCT orders.id ) FROM demo_db.order_items  AS order_items
-        LEFT JOIN demo_db.orders  AS orders ON order_items.order_id = orders.id
-        WHERE orders.user_id = ${orders.id}
-        GROUP BY users.id ) ;;
-  }
-
-  dimension: customer_order_tier {
-    type: tier
-    tiers: [1,2,3,6,10]
-    style: integer
-    sql: ${customer_order_count} ;;
-  }
   measure: count {
     type: count
     drill_fields: [detail*]
