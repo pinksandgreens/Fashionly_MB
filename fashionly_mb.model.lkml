@@ -33,7 +33,7 @@ explore: order_items {
 
   join: orders {
     type: left_outer
-    sql_on: ${order_items.order_id} = ${orders.id} ;;
+    sql_on: ${order_items.order_id} = ${orders.order_id} ;;
     relationship: many_to_one
   }
 
@@ -52,8 +52,8 @@ explore: order_items {
   join: customer_revenue {
     type: left_outer
     sql_on: ${customer_revenue.orders_created_date} = ${orders.created_date}
-            AND ${customer_revenue.order_id} = ${orders.id} ;;
-    relationship: many_to_many
+            AND ${customer_revenue.order_id} = ${orders.order_id} ;;
+    relationship: many_to_one
   }
 
   join: customer_counts {
@@ -75,7 +75,7 @@ explore: customers {
 
   join: orders {
     type: left_outer
-    sql_on: ${order_items.order_id} = ${orders.id} ;;
+    sql_on: ${order_items.order_id} = ${orders.order_id} ;;
     relationship: many_to_one
   }
 
@@ -95,6 +95,12 @@ explore: customers {
     type: left_outer
     sql_on: ${customer_counts.user_id} = ${orders.user_id} ;;
     relationship: one_to_one
+  }
+
+  join: customer_revenue {
+    type: left_outer
+    sql_on: ${customer_revenue.order_id} = ${order_items.order_id} ;;
+    relationship: many_to_one
   }
 
 }

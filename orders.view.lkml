@@ -1,7 +1,7 @@
 view: orders {
   sql_table_name: demo_db.orders ;;
 
-  dimension: id {
+  dimension: order_id {
     primary_key: yes
     type: number
     sql: ${TABLE}.id ;;
@@ -28,12 +28,12 @@ view: orders {
 
   dimension: user_id {
     type: number
-    # hidden: yes
+    hidden: yes
     sql: ${TABLE}.user_id ;;
   }
 
-  measure: count {
+  measure: count_of_orders {
     type: count
-    drill_fields: [id, users.last_name, users.first_name, users.id, order_items.count]
+    drill_fields: [order_id, users.last_name, users.first_name, users.id, order_items.count]
   }
 }

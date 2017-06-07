@@ -16,6 +16,11 @@ view: customer_revenue {
                 THEN  order_items.sale_price
                 ELSE 0
               END  ), 0) AS `total_gross_revenue`
+        COALESCE(AVG(CASE
+                WHEN  orders.status = 'complete' AND (DATE(order_items.returned_at )) IS NULL
+                THEN  order_items.sale_price
+                ELSE 0
+              END  ), 0) AS `average_gross_revenue`
       FROM demo_db.order_items  AS order_items
       LEFT JOIN demo_db.orders  AS orders ON order_items.order_id = orders.id
       LEFT JOIN demo_db.users  AS users ON orders.user_id = users.id
@@ -54,10 +59,15 @@ view: customer_revenue {
     sql: ${TABLE}.total_gross_revenue_90_days ;;
   }
 
+dimension: total_gross_revenue {
+    type: number
+    sql: ${TABLE}.total_gross_revenue ;;
+}
 dimension: customer_revenue_tier {
     type: tier
-    style: interval
+    style: relational
     tiers: [4.99, 9.99, 49.99, 99.99, 499.99, 999.99]
+    sql: ${total_gross_revenue} ;;
 }
 
   set: detail {
