@@ -3,7 +3,7 @@ view: customer_revenue {
     sql: SELECT
         orders.id AS 'order_id',
         DATE(orders.created_at ) AS `orders_created_date`,
-        DATE(users.created_at ) AS `users_created_date`,
+        --DATE(users.created_at ) AS `users_created_date`,
         COALESCE(SUM(CASE
                 WHEN  orders.status = 'complete' AND (DATE(order_items.returned_at )) IS NULL
                 AND (((users.created_at ) >= ((DATE_ADD(CURDATE(),INTERVAL -89 day)))
@@ -15,7 +15,7 @@ view: customer_revenue {
                 WHEN  orders.status = 'complete' AND (DATE(order_items.returned_at )) IS NULL
                 THEN  order_items.sale_price
                 ELSE 0
-              END  ), 0) AS `total_gross_revenue`
+              END  ), 0) AS `total_gross_revenue`,
         COALESCE(AVG(CASE
                 WHEN  orders.status = 'complete' AND (DATE(order_items.returned_at )) IS NULL
                 THEN  order_items.sale_price
@@ -25,14 +25,12 @@ view: customer_revenue {
       LEFT JOIN demo_db.orders  AS orders ON order_items.order_id = orders.id
       LEFT JOIN demo_db.users  AS users ON orders.user_id = users.id
 
-       GROUP BY 1,2
+      GROUP BY 1,2
       ORDER BY DATE(orders.created_at )
-      LIMIT 500
        ;;
   }
 
   measure: count {
-    hidden: yes
     type: count
     drill_fields: [detail*]
   }
@@ -48,10 +46,10 @@ view: customer_revenue {
     sql: ${TABLE}.orders_created_date ;;
   }
 
-  dimension: users_created_date {
-    type: date
-    sql: ${TABLE}.users_created_date ;;
-  }
+  # dimension: users_created_date {
+  #   type: date
+  #   sql: ${TABLE}.users_created_date ;;
+  # }
 
   dimension: total_gross_revenue_90_days {
     type: number

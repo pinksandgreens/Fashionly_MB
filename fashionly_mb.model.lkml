@@ -6,7 +6,9 @@ include: "*.view"
 # include all the dashboards
 include: "*.dashboard"
 
-
+map_layer: neighborhoods {
+  url: "https://wherever.com/my.topo.json"
+}
 explore: events {
 
   join: users {

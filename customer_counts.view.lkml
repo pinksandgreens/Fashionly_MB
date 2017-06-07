@@ -5,8 +5,10 @@ view: customer_counts {
     SELECT orders.user_id user_id,
            COUNT(DISTINCT orders.id ) customer_distinct_order_count,
            COUNT(orders.id) customer_total_orders,
-           MAX(orders.created_at) customer_last_order_date,
-           MIN(orders.created_at) customer_first_order_date
+           MAX(NULLIF(orders.created_at, 0)) customer_last_order_date,
+           MIN(NULLIF(orders.created_at, 0)) customer_first_order_date,
+           DATEDIFF(MAX(NULLIF(orders.created_at,0)),MIN(NULLIF(orders.created_at,0))) AS days_as_customer,
+           DATEDIFF(CURDATE(),MAX(NULLIF(orders.created_at,0))) AS days_since_last_order
       FROM demo_db.order_items  AS order_items
         LEFT JOIN demo_db.orders  AS orders ON order_items.order_id = orders.id
         GROUP BY orders.user_id  ;;
@@ -55,11 +57,15 @@ view: customer_counts {
 
     dimension: days_since_last_order {
       type: number
-      sql:  DATEDIFF(CURDATE(), ${customer_last_order_date});;
+      sql:  ${TABLE}.days_since_last_order;;
     }
 
     measure: average_days_since_last_order {
       type: average
-      sql: ${days_since_last_order} ;;
+      sql: ${TABLE}.days_since_last_order;;
+    }
+    measure: total_orders {
+      type: sum
+      sql:  ${customer_order_count} ;;
     }
 }

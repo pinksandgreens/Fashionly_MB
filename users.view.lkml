@@ -28,6 +28,7 @@ dimension: new_customer {
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
+    map_layer_name: neighborhoods
   }
 
   dimension: country {
