@@ -1,7 +1,8 @@
 view: customer_revenue {
   derived_table: {
     sql: SELECT
-        orders.id AS 'order_id',
+        --orders.id AS 'order_id',
+        users.user_id,
         DATE(orders.created_at ) AS `orders_created_date`,
         --DATE(users.created_at ) AS `users_created_date`,
         COALESCE(SUM(CASE
@@ -30,7 +31,7 @@ view: customer_revenue {
        ;;
   }
 
-  measure: count {
+  measure: count_of_customers {
     type: count
     drill_fields: [detail*]
   }
