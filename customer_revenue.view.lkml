@@ -2,7 +2,7 @@ view: customer_revenue {
   derived_table: {
     sql: SELECT
         --orders.id AS 'order_id',
-        users.user_id,
+        users.id AS user_id,
         DATE(orders.created_at ) AS `orders_created_date`,
         --DATE(users.created_at ) AS `users_created_date`,
         COALESCE(SUM(CASE
@@ -29,6 +29,8 @@ view: customer_revenue {
       GROUP BY 1,2
       ORDER BY DATE(orders.created_at )
        ;;
+      persist_for: "1 hour"
+      indexes: ["user_id"]
   }
 
   measure: count_of_customers {

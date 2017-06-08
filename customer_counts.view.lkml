@@ -12,7 +12,9 @@ view: customer_counts {
       FROM demo_db.order_items  AS order_items
         LEFT JOIN demo_db.orders  AS orders ON order_items.order_id = orders.id
         GROUP BY orders.user_id  ;;
-    # persist_for: "24 hours"
+      indexes: ["user_id"]
+      sql_trigger_value: SELECT CURDATE() ;;
+      # persist_for: "24 hours"
     }
 
 
@@ -58,6 +60,11 @@ view: customer_counts {
     dimension: days_since_last_order {
       type: number
       sql:  ${TABLE}.days_since_last_order;;
+    }
+
+    dimension: active_customer {
+      type: yesno
+      sql: ${days_since_last_order} <= 90 ;;
     }
 
     measure: average_days_since_last_order {
