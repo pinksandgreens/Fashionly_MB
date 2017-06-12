@@ -1,4 +1,10 @@
 view: customer_counts {
+  filter: orders_after {
+      label: "Test Fiter to limit orders created date"
+      type: date
+      default_value: "2017-01-01"
+  }
+
   label: "Customer Facts"
   derived_table: {
     sql:
@@ -11,9 +17,10 @@ view: customer_counts {
            DATEDIFF(CURDATE(),MAX(NULLIF(orders.created_at,0))) AS days_since_last_order
       FROM demo_db.order_items  AS order_items
         LEFT JOIN demo_db.orders  AS orders ON order_items.order_id = orders.id
+        WHERE { % condition orders_after % } orders.created_at { % endcondition % }
         GROUP BY orders.user_id  ;;
-      indexes: ["user_id"]
-      sql_trigger_value: SELECT CURDATE() ;;
+      #indexes: ["user_id"]
+      #sql_trigger_value: SELECT CURDATE() ;;
       # persist_for: "24 hours"
     }
 

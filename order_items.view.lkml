@@ -131,6 +131,12 @@ view: order_items {
     sql: 100.0 * ${count_of_customers_with_returned_items}/${users.count} ;;
   }
 
+measure: avg_sale_price {
+    type: average
+    sql: ${sale_price} ;;
+    value_format_name: usd_0
+}
+
 measure: total_revenue_new_customers {
   description: "Total revenue for new customers 90 days or newer"
   type: sum
@@ -188,7 +194,13 @@ measure: total_gross_margin_percentage {
     sql: 1.0 * ${total_sales_price}/${users.count} ;;
   }
 
-
+  measure: total_gross_margin {
+    type: sum
+    value_format_name: decimal_2
+    sql: ${sale_margin} ;;
+    html: {{ rendered_value }} || {{ total_gross_margin_percentage._rendered_value }} of total
+      ;;
+  }
   set: detail {
     fields: [id,
       orders.created_at,
