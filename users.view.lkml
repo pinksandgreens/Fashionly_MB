@@ -28,7 +28,7 @@ dimension: new_customer {
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
-    map_layer_name: neighborhoods
+    #map_layer_name: my_neighborhood_layer
   }
 
   dimension: country {
@@ -78,7 +78,7 @@ dimension: new_customer {
   }
 
   dimension: zip {
-    map_layer_name: us_zipcode_tabulation_areas
+    map_layer_name: my_neighborhood_layer
     type: zipcode
     sql: ${TABLE}.zip ;;
   }

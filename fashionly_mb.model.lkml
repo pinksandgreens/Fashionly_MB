@@ -6,8 +6,10 @@ include: "*.view"
 # include all the dashboards
 include: "*.dashboard"
 
-map_layer: neighborhoods {
-  url: "https://wherever.com/my.topo.json"
+
+map_layer: my_neighborhood_layer {
+  file: "map.topojson"
+  property_key: "neighborhood"
 }
 explore: events {
 
