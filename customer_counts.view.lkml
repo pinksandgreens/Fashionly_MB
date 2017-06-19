@@ -69,6 +69,10 @@ view: customer_counts {
       sql:  ${TABLE}.days_since_last_order;;
     }
 
+    dimension: days_since_customer {
+        type: number
+        sql: ${TABLE}.days_as_customer ;;
+    }
     dimension: active_customer {
       type: yesno
       sql: ${days_since_last_order} <= 90 ;;

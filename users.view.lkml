@@ -36,6 +36,29 @@ dimension: new_customer {
     sql: ${TABLE}.country ;;
   }
 
+  dimension: days_since_signup {
+      type: number
+      sql: DATEDIFF(CURDATE(), ${created_date} );;
+  }
+
+  dimension: days_since_signup_tier {
+    type: tier
+    tiers: [30, 60, 90, 180, 360, 720]
+    sql: ${days_since_signup} ;;
+  }
+
+  dimension: months_since_signup {
+    type: number
+    sql: FLOOR((DATEDIFF(CURDATE(), ${created_date} ))/30);;
+  }
+
+
+  dimension: month_since_signup_tier {
+    type: tier
+    tiers: [1, 3, 6, 12, 18, 24]
+    sql: ${months_since_signup} ;;
+  }
+
   dimension_group: created {
     type: time
     timeframes: [
@@ -50,6 +73,7 @@ dimension: new_customer {
     ]
     sql: ${TABLE}.created_at ;;
   }
+
 
   dimension: email {
     type: string
@@ -104,6 +128,14 @@ dimension: customer_order_tier {
     drill_fields: [detail*]
   }
 
+measure: average_days_since_signup {
+  type: average
+  sql: ${days_since_signup} ;;
+}
+measure:  average_months_since_signup {
+  type: average
+  sql: FLOOR((DATEDIFF(CURDATE(), ${created_date} ))/30) ;;
+}
 
   # ----- Sets of fields for drilling ------
   set: detail {
