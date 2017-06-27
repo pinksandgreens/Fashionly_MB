@@ -43,8 +43,9 @@ dimension: new_customer {
 
   dimension: days_since_signup_tier {
     type: tier
-    tiers: [30, 60, 90, 180, 360, 720]
+    tiers: [30, 60, 90, 180, 270, 360, 540, 720]
     sql: ${days_since_signup} ;;
+    style: integer
   }
 
   dimension: months_since_signup {
@@ -57,6 +58,7 @@ dimension: new_customer {
     type: tier
     tiers: [1, 3, 6, 12, 18, 24]
     sql: ${months_since_signup} ;;
+    style: integer
   }
 
   dimension_group: created {
@@ -88,6 +90,11 @@ dimension: new_customer {
   dimension: gender {
     type: string
     sql: ${TABLE}.gender ;;
+  }
+
+  dimension: is_male {
+    type: yesno
+    sql: NULL = "M" ;;
   }
 
   dimension: last_name {

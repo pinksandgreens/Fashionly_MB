@@ -29,8 +29,8 @@ view: customer_revenue {
       GROUP BY 1,2
       ORDER BY DATE(orders.created_at )
        ;;
-      persist_for: "1 hour"
-      indexes: ["user_id"]
+      # persist_for: "1 hour"
+      # indexes: ["user_id"]
   }
 
   measure: count_of_customers {

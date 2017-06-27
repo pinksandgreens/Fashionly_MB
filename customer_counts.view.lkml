@@ -3,6 +3,7 @@ view: customer_counts {
       label: "Test Fiter to limit orders created date"
       type: date
       default_value: "2017-01-01"
+      suggest_dimension: orders.created_date
   }
 
   label: "Customer Facts"

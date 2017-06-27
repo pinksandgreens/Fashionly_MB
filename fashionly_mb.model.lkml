@@ -12,7 +12,7 @@ map_layer: my_neighborhood_layer {
   property_key: "neighborhood"
 }
 explore: events {
-
+conditionally_filter: {}
   join: users {
     type: left_outer
     sql_on: ${events.user_id} = ${users.id} ;;
