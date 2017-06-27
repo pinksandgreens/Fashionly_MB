@@ -18,7 +18,6 @@ view: customer_counts {
            DATEDIFF(CURDATE(),MAX(NULLIF(orders.created_at,0))) AS days_since_last_order
       FROM demo_db.order_items  AS order_items
         LEFT JOIN demo_db.orders  AS orders ON order_items.order_id = orders.id
-        WHERE { % condition orders_after % } orders.created_at { % endcondition % }
         GROUP BY orders.user_id  ;;
       #indexes: ["user_id"]
       #sql_trigger_value: SELECT CURDATE() ;;
