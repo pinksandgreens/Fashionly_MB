@@ -66,6 +66,12 @@ explore: order_items {
     relationship: one_to_one
   }
 
+  join:  user_behavior {
+      type: left_outer
+      sql_on:  ${users.id} = ${user_behavior.user_id} ;;
+      relationship: one_to_one
+  }
+
 }
 
 explore: customers {
@@ -132,3 +138,5 @@ explore: user_data {
 explore: users {}
 
 explore: users_nn {}
+
+explore: user_behavior {}

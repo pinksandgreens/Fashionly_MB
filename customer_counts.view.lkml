@@ -86,4 +86,12 @@ view: customer_counts {
       type: sum
       sql:  ${customer_order_count} ;;
     }
+
+    measure: count_of_active_customer{
+      type: count
+      filters: {
+        field: active_customer
+        value: "yes"
+      }
+    }
 }
