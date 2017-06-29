@@ -27,8 +27,8 @@ view: user_behavior {
   }
 
   dimension: user_order_id {
-    type: string
-    sql: CONCAT(${user_id} || ${order_id}) ;;
+    type: number
+    sql: CONCAT(${user_id}, ${order_id}, ${order_rank}) ;;
     primary_key: yes
   }
 

@@ -69,7 +69,7 @@ explore: order_items {
   join:  user_behavior {
       type: left_outer
       sql_on:  ${users.id} = ${user_behavior.user_id} ;;
-      relationship: one_to_one
+      relationship: many_to_one
   }
 
 }

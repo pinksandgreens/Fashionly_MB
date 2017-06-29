@@ -105,7 +105,15 @@ view: order_items {
     value_format_name: usd
     description: "Adjusted sales minus inventory cost"
     sql: ${total_adjusted_revenue} - ${inventory_items.total_cost} ;;
-    drill_fields: [margin_detail*]
+#     drill_fields: [margin_detail*]
+    html:
+
+      label: "Brands Sold"
+      url: "https://localhost:9999/dashboards/10?"
+#       url: "/explore/model/explore_name?fields=view.field_1,view.field_2,&f[view.filter_1]={{ value }}"
+         icon_url: "http://www.looker.com/favicon.ico"
+        ;;
+
   }
 
   measure:  average_gross_margin {
