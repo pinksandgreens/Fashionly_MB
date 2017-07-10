@@ -140,3 +140,5 @@ explore: users {}
 explore: users_nn {}
 
 explore: user_behavior {}
+
+explore: templated_filter_example {}
