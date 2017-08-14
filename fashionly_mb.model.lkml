@@ -112,15 +112,26 @@ explore: customers {
     sql_on: ${customer_revenue.order_id} = ${order_items.order_id} ;;
     relationship: many_to_one
   }
+  join:  templated_filter_example {
+      type: left_outer
+      sql_on: ${orders.created_date} = ${templated_filter_example.created_date} ;;
+      relationship:one_to_many
+  }
 
 }
 
 explore: orders {
+
   join: users {
     type: left_outer
     sql_on: ${orders.user_id} = ${users.id} ;;
     relationship: many_to_one
   }
+  # join: users_dup {
+  #   type: left_outer
+  #   sql_on: ${users_dup.id} = ${users.id} ;;
+  #   relationship: one_to_one
+  # }
 }
 
 explore: products {}
@@ -137,8 +148,21 @@ explore: user_data {
 
 explore: users {}
 
+explore: users_dup {}
+
 explore: users_nn {}
 
 explore: user_behavior {}
 
-explore: templated_filter_example {}
+explore: templated_filter_example {
+  join: users {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${users.city} = ${templated_filter_example.users_city} ;;
+  }
+  join: orders {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${orders.created_date} = ${templated_filter_example.created_date} ;;
+  }
+}

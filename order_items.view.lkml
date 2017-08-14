@@ -68,6 +68,12 @@ view: order_items {
     }
   }
 
+  measure: count_category {
+    type: number
+    sql:
+          SUM( CASE WHEN ${products.category} = 'Shorts' THEN 1 ELSE 0 END) ;;
+  }
+
 #   measure:  max_order_date {
 #     type:  max
 #     sql:  ${orders.created_date};;

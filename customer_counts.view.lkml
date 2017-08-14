@@ -2,11 +2,12 @@ view: customer_counts {
   filter: orders_after {
       label: "Test Fiter to limit orders created date"
       type: date
-      default_value: "2017-01-01"
-      suggest_dimension: orders.created_date
+      # default_value: "2017-01-01"
+      # suggest_dimension: orders.created_date
   }
 
   label: "Customer Facts"
+
   derived_table: {
     sql:
     SELECT orders.user_id user_id,
@@ -18,13 +19,27 @@ view: customer_counts {
            DATEDIFF(CURDATE(),MAX(NULLIF(orders.created_at,0))) AS days_since_last_order
       FROM demo_db.order_items  AS order_items
         LEFT JOIN demo_db.orders  AS orders ON order_items.order_id = orders.id
+        WHERE orders.created_at BETWEEN
+        --{% date_start orders_after %} AND {% date_end orders_after %}
+       COALESCE( {% date_start orders_after %}, DATE_ADD({% date_end orders_after %}, INTERVAL -30 DAY))
+       AND {% date_end orders_after %}
         GROUP BY orders.user_id  ;;
       #indexes: ["user_id"]
       #sql_trigger_value: SELECT CURDATE() ;;
       # persist_for: "24 hours"
     }
 
+  dimension: create_start_date {
+    type: string
+    hidden: yes
+    sql: COALESCE( {% date_start orders_after %}, DATEADD(${create_end_date}, INTERVAL DAY -30) ;;
+  }
 
+  dimension: create_end_date {
+    type: string
+    hidden: yes
+    sql: {% date_end orders_after %} ;;
+  }
     dimension: user_id {
       type: number
       sql: ${TABLE}.user_id ;;

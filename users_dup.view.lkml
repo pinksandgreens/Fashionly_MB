@@ -1,10 +1,9 @@
-view: users {
+view: users_dup {
   sql_table_name: demo_db.users ;;
-  filter: user_city_filter {
+  filter: user_state_filter {
     type: string
-    suggest_explore: users_dup
-    suggest_dimension: users_dup.city
-    }
+    suggest_dimension: city
+  }
 
   dimension: id {
     primary_key: yes
@@ -17,38 +16,24 @@ view: users {
     sql: ${TABLE}.age ;;
   }
 
-dimension: filter_val {
+  dimension: age_tier {
 
-  type: string
-  sql: {% parameter user_city_filter %};;
-}
-dimension: age_tier {
+    type: tier
+    style: integer
+    tiers: [15,25,35,50,65]
+    sql: ${age} ;;
+  }
 
-  type: tier
-  style: integer
-  tiers: [15,25,35,50,65]
-  sql: ${age} ;;
-}
-
-dimension: new_customer {
-  type: yesno
-  sql:  ${created_date} >= DATE_ADD(CURDATE(), INTERVAL -89 DAY)   ;;
+  dimension: new_customer {
+    type: yesno
+    sql:  ${created_date} >= DATE_ADD(CURDATE(), INTERVAL -89 DAY)   ;;
 #  (((users.created_at ) >= ((DATE_ADD(CURDATE(),INTERVAL -89 day))) AND (users.created_at ) < ((DATE_ADD(DATE_ADD(CURDATE(),INTERVAL -89 day),INTERVAL 90 day)))))
-}
+  }
   dimension: city {
     type: string
-    sql: ${TABLE}.city ;;
+    sql: (${TABLE}.city) ;;
     #map_layer_name: my_neighborhood_layer
   }
-
-  dimension: secondary_city {
-    type: string
-    sql: concat(${TABLE}.city, ' ' , ${city}) ;;
-    #map_layer_name: my_neighborhood_layer
-  }
-
-
-
 
   dimension: country {
     type: string
@@ -56,8 +41,8 @@ dimension: new_customer {
   }
 
   dimension: days_since_signup {
-      type: number
-      sql: DATEDIFF(CURDATE(), ${created_date} );;
+    type: number
+    sql: DATEDIFF(CURDATE(), ${created_date} );;
   }
 
   dimension: days_since_signup_tier {
@@ -116,14 +101,6 @@ dimension: new_customer {
     sql: NULL = "M" ;;
   }
 
-  dimension: is_city_selected {
-      type: yesno
-#       sql: ${secondary_city} LIKE CONCAT('%', {% parameter user_city_filter %}, '%');;
-#       sql: POSITION({% parameter user_city_filter %}  IN ${secondary_city} ) > 0 ;;
-    sql: POSITION(${filter_val}  IN ${secondary_city} ) > 0 ;;
-
-  }
-
   dimension: last_name {
     type: string
     sql: ${TABLE}.last_name ;;
@@ -135,32 +112,26 @@ dimension: new_customer {
     sql: ${TABLE}.state ;;
   }
 
-  dimension: state_greater_100 {
-      type: string
-
-  }
-
   dimension: zip {
     map_layer_name: my_neighborhood_layer
     type: zipcode
     sql: ${TABLE}.zip ;;
   }
-
-dimension: customer_order_count {
-  type: number
-  #hidden: yes
-  sql:  (SELECT COUNT(DISTINCT orders.id ) FROM demo_db.order_items  AS order_items
+  dimension: customer_order_count {
+    type: number
+    #hidden: yes
+    sql:  (SELECT COUNT(DISTINCT orders.id ) FROM demo_db.order_items  AS order_items
         LEFT JOIN demo_db.orders  AS orders ON order_items.order_id = orders.id
         WHERE orders.user_id = ${TABLE}.id
         GROUP BY users.id ) ;;
-}
+  }
 
-dimension: customer_order_tier {
-  type: tier
-  tiers: [1,2,3,6,10]
-  style: integer
-  sql: ${customer_order_count} ;;
-}
+  dimension: customer_order_tier {
+    type: tier
+    tiers: [1,2,3,6,10]
+    style: integer
+    sql: ${customer_order_count} ;;
+  }
 
   measure: count {
     label: "Count of users"
@@ -168,24 +139,14 @@ dimension: customer_order_tier {
     drill_fields: [detail*]
   }
 
-  measure: select_city_count {
-
-      type: count
-      filters: {
-        field:  is_city_selected
-        value: "yes"
-        }
-#     sql: ${city}  = ${filter_val}
+  measure: average_days_since_signup {
+    type: average
+    sql: ${days_since_signup} ;;
   }
-
-measure: average_days_since_signup {
-  type: average
-  sql: ${days_since_signup} ;;
-}
-measure:  average_months_since_signup {
-  type: average
-  sql: FLOOR((DATEDIFF(CURDATE(), ${created_date} ))/30) ;;
-}
+  measure:  average_months_since_signup {
+    type: average
+    sql: FLOOR((DATEDIFF(CURDATE(), ${created_date} ))/30) ;;
+  }
 
   # ----- Sets of fields for drilling ------
   set: detail {
