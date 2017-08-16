@@ -17,7 +17,8 @@
         LEFT JOIN demo_db.users as users1 on orders1.user_id = users1.id
         WHERE
           {% condition users.city %} users1.city {% endcondition %} AND
-          {% condition orders.created_date %} orders1.created_at {% endcondition %}
+          {% condition orders.created_date %} orders1.created_at {% endcondition %} AND
+          {% condition users.state %} users1.state {% endcondition %}
         GROUP BY 1,2,3,4 ;;
     }
 
@@ -51,10 +52,6 @@
       sql: ${TABLE}.state ;;
     }
 
-    dimension: traffic_source {
-      type: string
-      sql: ${TABLE}.traffic_source ;;
-    }
 
     measure: count_users {
       type: sum
