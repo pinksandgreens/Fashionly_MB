@@ -18,7 +18,8 @@
         WHERE
           {% condition users.city %} users1.city {% endcondition %} AND
           {% condition orders.created_date %} orders1.created_at {% endcondition %} AND
-          {% condition users.state %} users1.state {% endcondition %}
+          {% condition users.state %} users1.state {% endcondition %} AND
+            {% condition orders.status %} orders1.status {% endcondition %}
         GROUP BY 1,2,3,4 ;;
     }
 

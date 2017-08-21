@@ -75,6 +75,8 @@ explore: order_items {
 }
 
 explore: customers {
+
+#   sql_always_where: {% parameter create_date_filter %} > ${orders.created_date} ;;
   view_name: order_items
 
   join: inventory_items {

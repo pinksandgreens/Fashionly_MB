@@ -243,6 +243,7 @@ view: order_items {
         html: {{ rendered_value }} || {{ total_gross_margin_percentage._rendered_value }} of total
           ;;
       }
+
       set: detail {
         fields: [id,
           orders.created_at,

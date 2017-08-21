@@ -1,12 +1,21 @@
 view: orders {
   sql_table_name: demo_db.orders ;;
 
-filter: create_date_filter {
+
+  filter: create_date_filter {
     type: date
-    suggest_dimension: created_date
 
-}
+  }
+  filter: test_date_filter {
+    type: string
+    sql: ${created_date} > ${testdatefilter_date};;
+  }
 
+  dimension_group: testdatefilter {
+    type: time
+    timeframes: [raw, date]
+    sql:  CAST({% parameter test_date_filter %} AS DATE);;
+  }
   dimension: order_id {
     primary_key: yes
     type: number
@@ -25,7 +34,7 @@ filter: create_date_filter {
       year,
       month_num
     ]
-    sql: ${TABLE}.created_at ;;
+    sql: ${TABLE}.created_at;;
   }
 
   dimension: create_start_date {
@@ -33,6 +42,7 @@ filter: create_date_filter {
     hidden: yes
     sql: COALESCE( {% date_start create_date_filter %}, DATEADD(${create_end_date}, INTERVAL DAY -30) ;;
   }
+
 
   dimension: create_end_date {
     type: string
@@ -50,25 +60,64 @@ filter: create_date_filter {
     ;;
   }
 
-dimension_group: extracted_created {
-  type: time
-  timeframes: [ day_of_month, hour_of_day, minute, second]
-  sql:   ${TABLE}.created_at;;
-}
+  dimension_group: extracted_created {
+    type: time
+    timeframes: [ day_of_month, hour_of_day, minute, second]
+    sql:   ${TABLE}.created_at;;
+  }
   dimension: status {
     type: string
     sql: ${TABLE}.status ;;
 
   }
 
-  dimension: user_id {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.user_id ;;
-  }
+  dimension: status_upper {
+    type: string
+    sql: CASE WHEN ${status} LIKE 'complete%'  THEN 'COMPLETED'
+              WHEN ${status} LIKE 'pend%' THEN 'PENDING'
+              WHEN ${status} LIKE 'cancel%' THEN 'CANCELLED'
+              END ;;
 
-  measure: count_of_orders {
-    type: count
-    drill_fields: [order_id, users.last_name, users.first_name, users.id, order_items.count]
+    }
+    dimension: user_id {
+      type: number
+      hidden: yes
+      sql: ${TABLE}.user_id ;;
+    }
+
+    dimension: yearly_orders_target_base {
+      type: number
+      hidden:  yes
+      sql: 15000.00 ;;
+    }
+
+    measure: count_of_orders {
+      type: count
+      drill_fields: [order_id, users.last_name, users.first_name, users.id, order_items.count]
+    }
+
+    measure:  yearly_budget_target {
+      type: average
+      sql: ${yearly_orders_target_base} ;;
+    }
+
+    measure:  running_monthly_budget_target {
+      type: running_total
+      sql: ${yearly_orders_target_base}/12 ;;
+    }
+
+    measure:  running_total_of_orders {
+      type: running_total
+      sql: ${count_of_orders} ;;
+      html: {{ running_total_of_orders._value }} | {{ running_total_of_orders._value | divided_by: yearly_orders_target_base._value  | times: 100 | round: 2 }}% of Target;;
+
+    }
+
+    measure:  percentage_complete {
+      type:  number
+      sql:  ${running_total_of_orders} ;;
+
+      html: {{ running_total_of_orders._value | divided_by: yearly_orders_target_base._value | times: 100 | round: 2 }}% of Target;;
+    }
+
   }
-}
