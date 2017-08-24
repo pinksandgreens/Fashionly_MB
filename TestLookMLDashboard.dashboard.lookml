@@ -1,7 +1,7 @@
 - dashboard: testlookmldashboard
   title: Testlookmldashboard
-  layout: tile
-  tile_size: 100
+  layout: newspaper
+#   tile_size: 100
 
 # - dashboard: Customer Behaviour
 #  layout: newspaper
